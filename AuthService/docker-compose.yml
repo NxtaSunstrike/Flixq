@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+
+  db:
+    image: postgres:15
+    container_name: UserDbReg
+    command: -p 5433
+    expose:
+      - 5433
+    env_file:
+      - .env-non-dev
+    
+  redis:
+    image: redis:7
+    container_name: RedisReg
+    command: --port 5379
+    expose:
+      - 5379
+    env_file:
+      - .env-non-dev
+
+  # rabbitmq:
+  #   image: rabbitmq:3.10.7-management
+  #   container_name: RabbitMQ_queque
+  #   restart: always
+  #   env_file:
+  #     - .env-non-dev
+  #   ports:
+  #     - 9999:15672
+
+ 
+  app:
+    build:
+      context: .
+    env_file:
+      - .env-non-dev
+    container_name: fastapi_reg_app
+    ports:
+      - 3000:8000
+    depends_on:
+      - db
+      - redis
