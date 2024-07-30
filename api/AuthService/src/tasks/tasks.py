@@ -24,12 +24,12 @@ celery.conf.result_backend=result
 
 @celery.task(name='send_email')
 def send_email(
-    content: EmailTask
+    content: str | Any,  email: str
 ) ->Any:
     msg = EmailMessage()
-    msg.set_content(str(content.content))
+    msg.set_content(content)
     msg['Subject'] = 'Confirmation code'
-    msg['To'] = content.email
+    msg['To'] = email
     with smtplib.SMTP_SSL(
             host=tasksSettings.EMAIL_HOST,
             port=tasksSettings.EMAIL_PORT

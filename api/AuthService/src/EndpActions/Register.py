@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from shemas.RegisterShema import UserCreate
 
-# from tasks.tasks import send_email
+from tasks.tasks import send_email
 
 
 from db.Postgres.Base import get_session
@@ -30,7 +30,7 @@ async def registration(
                     }
                 }
             await auth_cache.set_info(key=user.email, data=user_data)
-            # send_email.delay({'email': user.email, 'content': user_data['code']})
+            send_email.delay(email = user.email, content = str(user_data['code']))
             return {'message': 'Confirmation code has been sent to your email'}
                 
         raise HTTPException(status_code=400, detail="User already exists")

@@ -8,7 +8,7 @@ from settings.AppSettings import FastAPI_Settings
 print(FastAPI_Settings.model_dump())
 
 engine = create_async_engine(
-    url= f"postgresql+asyncpg://{os.environ.get('DB_USER')}:{os.environ.get('DB_PASSWORD')}@{os.environ.get('DB_HOST')}:{os.environ.get('DB_PORT')}/{os.environ.get('DB_NAME')}",
+    url=FastAPI_Settings.POSTGRES,
     echo=True,
 )
 

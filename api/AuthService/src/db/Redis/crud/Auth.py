@@ -27,7 +27,6 @@ class SessionAuth:
             res = await self.client.get(key)
             if res:
                 data = json.loads(res)
-                del data['password']
                 return data
             return {}
         except Exception as e:

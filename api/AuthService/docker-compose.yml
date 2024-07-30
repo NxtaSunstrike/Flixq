@@ -2,29 +2,31 @@ version: '3.7'
 
 services:
 
-  database:
+  db:
     image: postgres:15
-    environment:
-      POSTGRES_DB: "users"
-      POSTGRES_USER: "flisty"
-      POSTGRES_PASSWORD: "master$29Nikita"
+    env_file:
+      - .env-non-dev
     container_name: UserDbReg
-    ports:
-      - 5433:5432
+    command: -p 1221
+    expose:
+      - 1221
+
     
     
   redis:
     image: redis:7
     container_name: RedisReg
-    command: --port 5379
+    command: --port 5370
     expose:
-      - 5379
+      - 5370
     env_file:
       - .env-non-dev
 
   celery:
     build: 
       context: .
+    env_file:
+      - .env-non-dev
     container_name: Celery_Reg 
     command: bash -c "celery -A tasks.tasks:celery worker --loglevel=info"
     depends_on:
@@ -33,6 +35,8 @@ services:
   flower:
     build: 
       context: .
+    env_file:
+      - .env-non-dev
     container_name: flower_reg
     command: bash -c "celery -A tasks.tasks:celery flower --loglevel=info"
     ports:
@@ -50,7 +54,7 @@ services:
     ports:
       - 3000:8000
     depends_on:
-      - database
+      - db
       - redis
       - celery
       - flower
