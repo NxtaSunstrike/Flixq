@@ -1,22 +1,23 @@
 import json 
 from fastapi import HTTPException
+from fastapi import WebSocket
+from typing import Dict
+from typing import List
 
 from redis.asyncio import Redis
 from faststream import Logger
 
-from settings.AppSettings import FastAPI_Settings
-
-from StreamPool.app import router
 
 
-class SessionAuth:
+
+class Sessions:
 
     def __init__(self, redis_url: str) -> None:
         self.client: Redis = Redis.from_url(redis_url)
 
 
     async def set_info(
-        self, key: str, data: dict
+        self, key: str, data: dict |  Dict[str, List[WebSocket]]
     )->dict | HTTPException:
         try:
             await self.client.set(key, json.dumps(data))
@@ -45,7 +46,9 @@ class SessionAuth:
             return {"message": 'ok'}
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
+        
+    
 
 
-users_cache = SessionAuth(redis_url=FastAPI_Settings.REDIS_USERS)
-auth_cache = SessionAuth(redis_url=FastAPI_Settings.REDIS)
+# users_cache = SessionAuth(redis_url=FastAPI_Settings.REDIS_USERS)
+# auth_cache = SessionAuth(redis_url=FastAPI_Settings.REDIS)

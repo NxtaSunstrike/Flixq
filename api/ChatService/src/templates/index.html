@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WebSocket Chat</title>
+    </head>
+    <body>
+        <h1>WebSocket Chat</h1>
+        <input id="chat-id" type="text" placeholder="Enter chat UUID" />
+        <button onclick="joinChat()">Join Chat</button>
+        <ul id="messages"></ul>
+        <input id="message" type="text" placeholder="Type a message..." />
+        <button onclick="sendMessage()">Send</button>
+
+        <script>
+            let socket;
+
+            function joinChat() {
+                const chatId = document.getElementById("chat-id").value;
+                socket = new WebSocket(`ws://localhost:8000/chat/${chatId}`);
+
+                socket.onmessage = function(event) {
+                    const messages = document.getElementById("messages");
+                    const message = document.createElement("li");
+                    message.textContent = event.data;
+                    messages.appendChild(message);
+                };
+            }
+
+            function sendMessage() {
+                const messageInput = document.getElementById("message");
+                const message = messageInput.value;
+                socket.send(message);
+                messageInput.value = '';
+            }
+        </script>
+    </body>
+</html>

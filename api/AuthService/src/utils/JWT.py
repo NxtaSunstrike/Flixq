@@ -61,10 +61,10 @@ class JWT:
     
     
     async def Refresh(
-            self, token: str | bytes, type: str,  session: AsyncSession = Depends(get_session)
+            self, token: str | bytes, type: str,  DbSession: AsyncSession = Depends(get_session)
         ) -> dict:
         if (decoded:=await self.check_token(token=token, type=type)):
-            user = await Operations.get_item(session=session, item_uuid=decoded['sub'])
+            user = await Operations.get_item(DbSession=DbSession, item_uuid=decoded['sub'])
             return {
                 'access': await self.generate_jwt(
                     payload={

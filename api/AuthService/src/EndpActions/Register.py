@@ -17,10 +17,10 @@ from db.Postgres.crud.Requests import Operations
 
 
 async def registration(
-        user: UserCreate, session: AsyncSession = Depends(get_session)
+        user: UserCreate, DbSession: AsyncSession = Depends(get_session)
 ) -> dict[str | Any] | HTTPException:
     if not len(await users_cache.get_info(key=user.email)):
-        if not await Operations.get_item(session=session, email=user.email):
+        if not await Operations.get_item(DbSession=DbSession, email=user.email):
             user_data = {
                 'code': int(''.join(sample('123456789', 6))),
                 'user':  {

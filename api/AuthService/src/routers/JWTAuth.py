@@ -21,24 +21,24 @@ JWTRouter = APIRouter()
 
 @JWTRouter.post("/register")
 async def RegisterUser(
-    user: UserCreate, session: AsyncSession = Depends(get_session)
+    user: UserCreate, DbSession: AsyncSession = Depends(get_session)
 )->Any:
-    return await registration(session=session, user=user)
+    return await registration(DbSession=DbSession, user=user)
 
 
 @JWTRouter.post("/activate")
 async def ActivateUser(
-    user: Confirm, session: AsyncSession = Depends(get_session), response: Response = Response
+    user: Confirm,DbSession: AsyncSession = Depends(get_session), response: Response = Response
 )->Any:
-    return await confirmation(session=session, user_shema=user, response=response)
+    return await confirmation(DbSession=DbSession, user_shema=user, response=response)
     
 
 @JWTRouter.post("/login")
 async def LoginUser(
-    user: Login, session: AsyncSession = Depends(get_session), response: Response = Response
+    user: Login, DbSession: AsyncSession = Depends(get_session), response: Response = Response
 )->Any:
     return await login(
-        session=session, user=user, response=response
+        DbSession=DbSession, user=user, response=response
     )
 
 
@@ -49,8 +49,8 @@ async def LogoutUser(response: Response)->dict:
 
 @JWTRouter.get("/refresh")
 async def RefreshToken(
-    refresh: str = Cookie(default=None), session: AsyncSession = Depends(get_session)
+    refresh: str = Cookie(default=None), DbSession: AsyncSession = Depends(get_session)
 ) -> Any: 
-   return await Refresh(refresh=refresh, session=session)
+   return await Refresh(refresh=refresh, DbSession=DbSession)
 
 

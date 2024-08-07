@@ -13,14 +13,14 @@ from db.Redis.crud.Auth import users_cache, auth_cache
 
 
 async def confirmation(
-    user_shema: Confirm, response: Response, session: AsyncSession = Depends(get_session)
+    user_shema: Confirm, response: Response, DbSession: AsyncSession = Depends(get_session)
 )->dict[str | Any] | HTTPException:
     data = await auth_cache.get_info(key=user_shema.email)
     try:
         user = data['user']
         if data['code'] == user_shema.code:
             user: dict = await Operations.create_item(
-                session=session, email=user['email'], password=user['password'], username=user['name']
+                DbSession=DbSession, email=user['email'], password=user['password'], username=user['name']
             )
             await auth_cache.del_info(key=user_shema.email)
             await users_cache.set_info(key=user['email'], data=user)

@@ -5,8 +5,6 @@ from sqlalchemy.orm import DeclarativeBase
 
 from settings.AppSettings import FastAPI_Settings
 
-print(FastAPI_Settings.model_dump())
-
 engine = create_async_engine(
     url=FastAPI_Settings.POSTGRES,
     echo=True,

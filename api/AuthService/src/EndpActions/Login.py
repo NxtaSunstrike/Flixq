@@ -13,7 +13,7 @@ from db.Redis.crud.Auth import users_cache
 
 
 async def login(
-    user: Login, response: Response, session: AsyncSession = Depends(get_session)
+    user: Login, response: Response, DbSession: AsyncSession = Depends(get_session)
 ) -> None:
     if len(user_info:=await users_cache.get_info(key=user.email)):
         if await Encrypt.encrypt(user.password) == user_info['password']:
@@ -22,7 +22,7 @@ async def login(
             )
         raise HTTPException(status_code=401, detail="Invalid password")
 
-    elif (user_info:=await Operations.get_item(session=session, email=user.email)):
+    elif (user_info:=await Operations.get_item(DbSession=DbSession, email=user.email)):
         if await Encrypt.encrypt(user.password) == user_info['password']:
             return await LoginActions(
                 response=response, user_info=user_info

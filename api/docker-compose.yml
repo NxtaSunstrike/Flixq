@@ -1,0 +1,82 @@
+services:
+
+  auth-service:
+    build: 
+      context: AuthService
+    env_file:
+      - AuthService/.env-non-dev
+    container_name: AuthService
+    ports:
+      - 3001:8000
+    depends_on:
+    - db
+    - redis
+    - celery
+    - flower
+
+  chat-service:
+  build: 
+    context: ChatService
+  env_file:
+    - ChatService/.env-non-dev
+  container_name: ChatService
+  ports:
+    - 3002:8000
+  depends_on:
+    - streamredis
+    - chatredis
+
+  db:
+    image: postgres:15
+    env_file:
+      - AuthService/.env-non-dev
+    container_name: UserDbReg
+    command: -p 1221
+    expose:
+      - 1221
+
+  redis:
+    image: redis:7
+    container_name: RedisReg
+    command: --port 5370
+    expose:
+      - 5370
+    env_file:
+      - AuthService/.env-non-dev
+
+  celery:
+    build: 
+      context: AuthService
+    env_file:
+      - AuthService/.env-non-dev
+    container_name: Celery_Reg 
+    command: bash -c "celery -A tasks.tasks:celery worker --loglevel=info"
+    depends_on:
+      - redis
+  
+  flower:
+    build: 
+      context: AuthService
+    env_file:
+      - AuthService/.env-non-dev
+    container_name: flower_reg
+    command: bash -c "celery -A tasks.tasks:celery flower --loglevel=info"
+    ports:
+      - 8888:5555
+    depends_on:
+      - redis
+      - celery
+
+  streamredis:
+    image: redis:7
+    container_name: StreamRedis
+    command: --port 5371
+    expose:
+      - 5371
+
+  chatredis:
+    image: redis:7
+    container_name: ChatRedis
+    command: --port 5373
+    expose:
+      - 5373
