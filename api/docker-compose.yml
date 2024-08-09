@@ -15,16 +15,16 @@ services:
     - flower
 
   chat-service:
-  build: 
-    context: ChatService
-  env_file:
-    - ChatService/.env-non-dev
-  container_name: ChatService
-  ports:
-    - 3002:8000
-  depends_on:
-    - streamredis
-    - chatredis
+    build: 
+      context: ChatService
+    env_file:
+      - ChatService/.env-non-dev
+    container_name: ChatService
+    ports:
+      - 3002:8000
+    depends_on:
+      - streamredis
+      - chatredis
 
   db:
     image: postgres:15

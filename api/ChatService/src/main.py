@@ -5,7 +5,6 @@ from contextlib import asynccontextmanager
 from routers.ChatRouter import ChatRouter
 
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     yield

@@ -5,7 +5,7 @@ from pydantic import Field
 
 class RedisSettings(BaseSettings):
 
-    HOST:str = Field('localhost')
-    PORT:str = Field('5397')
+    HOST:str = Field(os.environ.get('REDIS_HOST'))
+    PORT:str = Field(os.environ.get('REDIS_PORT'))
 
 redisSettings = RedisSettings()
